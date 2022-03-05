@@ -1,7 +1,11 @@
 const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
+require('dotenv').config();
+const db = require('./db');
+const models = require('./models');
 
 const port = process.env.PORT || 4000;
+const DB_HOST = process.env.DB_HOST;
 
 const typeDefs = gql`
     type Question {
@@ -23,57 +27,30 @@ const typeDefs = gql`
     }
 `;
 
-const placeholders = [
-    {
-        'id': '1',
-        'question': 'What is your favorite color?',
-        'answer': 'red',
-        'accepted_answers': 'red, reds',
-        'created_at': 'date',
-        'aired_at': 'date'
-    },
-    {
-        'id': '2',
-        'question': 'What is your favorite color2?',
-        'answer': 'red2',
-        'accepted_answers': 'red, reds2',
-        'created_at': 'date',
-        'aired_at': 'date'
-    },
-    {
-        'id': '3',
-        'question': 'What is your favorite color3?',
-        'answer': 'red3',
-        'accepted_answers': 'red, reds3',
-        'created_at': 'date',
-        'aired_at': 'date'
-    },
-]
-
 const resolvers = {
     Query: {
-        getQuestions: () => placeholders,
-        getQuestion: (parent, args) => {
-            return placeholders.find((question) => question.id === args.id)
+        getQuestions: async () => models.Question.find(),
+        getQuestion: async (parent, args) => {
+            return models.Question.findById(args.id);
         }
     },
     Mutation: {
-        addQuestion: (parent, args) => {
-            const questionValue = {
-                id: String(placeholders.length + 1),
-                question: args.question,
-                answer: 'test',
-                accepted_answers: 'test',
-                created_at: 'date',
-                aired_at: 'date'
-            }
-            placeholders.push(questionValue);
-            return questionValue;
+        addQuestion: async (parent, args) => {
+            return await models.Question.create(
+                {
+                    question: args.question,
+                    answer: 'test',
+                    accepted_answers: 'test',
+                    created_at: 'date',
+                    aired_at: 'date'
+                }
+            );
         }
     }
 }
 
 const app = express();
+db.connect(DB_HOST);
 const server = new ApolloServer({typeDefs, resolvers});
 server.applyMiddleware({app, path: '/api'})
 
