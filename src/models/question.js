@@ -10,15 +10,11 @@ const questionSchema = new mongoose.Schema(
             type: String,
             require: true
         },
-        accepted_answers: {
+        acceptedAnswers: {
             type: String,
             require: true
         },
-        created_at: {
-            type: String,
-            require: true
-        },
-        aired_at: {
+        airedAt: {
             type: String,
             require: false
         }
