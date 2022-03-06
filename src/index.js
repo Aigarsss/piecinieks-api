@@ -28,7 +28,7 @@ const server = new ApolloServer({
     resolvers,
     context: ({ req }) => {
         const token = req.headers.authorization;
-        const user = getUser(token) || 'No authorization header';
+        const user = getUser(token);
         console.log(user)
         return { models, user }
     }

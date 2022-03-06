@@ -9,6 +9,7 @@ module.exports = gql`
         answer: String!
         acceptedAnswers: String
         airedAt: String
+        author: User!
         createdAt: DateTime!
         updatedAt: DateTime!
     }

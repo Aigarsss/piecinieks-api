@@ -17,6 +17,11 @@ const questionSchema = new mongoose.Schema(
         airedAt: {
             type: String,
             require: false
+        },
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
         }
     },
     {

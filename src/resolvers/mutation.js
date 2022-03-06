@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { AuthenticationError, ForbiddenError } = require('apollo-server-express');
@@ -6,17 +7,33 @@ require('dotenv').config();
 const gravatar = require('../util/gravatar');
 
 module.exports = {
-    addQuestion: async (parent, { question, answer, acceptedAnswers, airedAt }, { models }) => {
+    addQuestion: async (parent, { question, answer, acceptedAnswers, airedAt }, { models, user }) => {
+        if (!user) {
+            throw new AuthenticationError('You must be signed in to add questions')
+        }
+
         return await models.Question.create(
             {
                 question: question,
                 answer: answer,
                 acceptedAnswers: acceptedAnswers,
-                airedAt: airedAt
+                airedAt: airedAt,
+                author: mongoose.Types.ObjectId(user.id)
             }
         );
     },
-    deleteQuestion: async (parent, { id }, { models }) => {
+    deleteQuestion: async (parent, { id }, { models, user }) => {
+
+        if (!user) {
+            throw new AuthenticationError('You must be signed in to delete a question')
+        }
+
+        const question = models.Question.findById(id);
+
+        if (question && String(question.author) !== user.id) {
+            throw new ForbiddenError("You don't have permissions to delete the question");
+        }
+
         try {
             await models.Question.findOneAndRemove({ _id: id })
             return true;
@@ -24,7 +41,17 @@ module.exports = {
             return false;
         }
     },
-    updateQuestion: async (parent, { question, answer, acceptedAnswers, airedAt, id }, { models }) => {
+    updateQuestion: async (parent, { question, answer, acceptedAnswers, airedAt, id }, { models, user }) => {
+        if (!user) {
+            throw new AuthenticationError('You must be signed in to edit a question')
+        }
+
+        const originalQuestion = models.Question.findById(id);
+
+        if (originalQuestion && String(originalQuestion.author) !== user.id) {
+            throw new ForbiddenError("You don't have permissions to edit the question");
+        }
+
         return await models.Question.findOneAndUpdate(
             {
                 _id: id
