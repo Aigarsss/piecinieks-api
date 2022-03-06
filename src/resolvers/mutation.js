@@ -69,7 +69,7 @@ module.exports = {
             }
         )
     },
-    signUp: async (parent, { username, email, password }, { models }) => {
+    signUp: async (parent, { username, email, password, admin = false }, { models }) => {
         email = email.trim().toLowerCase();
         const hashed = await bcrypt.hash(password, 10);
         const avatar = gravatar(email);
@@ -79,7 +79,8 @@ module.exports = {
                 username,
                 email,
                 avatar,
-                password: hashed
+                password: hashed,
+                admin
             })
 
             return jwt.sign({ id: user._id}, process.env.JWT_SECRET)

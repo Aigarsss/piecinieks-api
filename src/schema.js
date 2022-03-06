@@ -20,6 +20,7 @@ module.exports = gql`
         email: String!
         avatar: String
         questions: [Question!]!
+        admin: Boolean!
     }
 
     type Query {
@@ -34,7 +35,7 @@ module.exports = gql`
         addQuestion(question: String!, answer: String!, acceptedAnswers: String!, airedAt: String): Question!
         updateQuestion(question: String!, answer: String!, acceptedAnswers: String!, airedAt: String!): Question!
         deleteQuestion(id: ID!): Boolean!
-        signUp(username: String!, email: String!, password: String!): String!
+        signUp(username: String!, email: String!, password: String!, admin: Boolean): String!
         signIn(username: String, email: String, password: String!): String!
     }
 `;
