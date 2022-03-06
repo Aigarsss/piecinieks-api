@@ -25,6 +25,9 @@ module.exports = gql`
     type Query {
         getQuestions: [Question!]!
         getQuestion(id: ID!): Question!
+        user(username: String!): User
+        users: [User!]!
+        me: User!
     }
     
     type Mutation {
