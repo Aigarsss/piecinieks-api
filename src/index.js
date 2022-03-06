@@ -12,7 +12,7 @@ const depthLimit = require('graphql-depth-limit');
 const { createComplexityLimitRule } = require('graphql-validation-complexity');
 
 const PORT = process.env.PORT || 4000;
-const DB_HOST = process.env.DB_HOST;
+const DB_HOST = process.env.ENVIRONMENT === 'prod' ? process.env.DB_HOST : process.env.TEST_DB;
 
 const app = express();
 app.use(helmet());
