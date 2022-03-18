@@ -28,7 +28,7 @@ module.exports = {
             throw new AuthenticationError('You must be signed in to delete a question')
         }
 
-        const question = models.Question.findById(id);
+        const question = await models.Question.findById(id);
 
         if (question && String(question.author) !== user.id) {
             throw new ForbiddenError("You don't have permissions to delete the question");
