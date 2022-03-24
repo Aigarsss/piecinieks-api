@@ -14,6 +14,10 @@ const questionSchema = new mongoose.Schema(
             type: String,
             require: true
         },
+        explanation: {
+            type: String,
+            require: false
+        },
         airedAt: {
             type: String,
             require: false

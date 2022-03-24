@@ -7,7 +7,8 @@ module.exports = gql`
         id: ID!
         question: String!
         answer: String!
-        acceptedAnswers: String
+        acceptedAnswers: String!
+        explanation: String
         airedAt: String
         author: User!
         createdAt: DateTime!
@@ -32,7 +33,7 @@ module.exports = gql`
     }
     
     type Mutation {
-        addQuestion(question: String!, answer: String!, acceptedAnswers: String!, airedAt: String): Question!
+        addQuestion(question: String!, answer: String!, acceptedAnswers: String!, explanation: String, airedAt: String): Question!
         updateQuestion(question: String!, answer: String!, acceptedAnswers: String!, airedAt: String!): Question!
         deleteQuestion(id: ID!): Boolean!
         signUp(username: String!, email: String!, password: String!, admin: Boolean): String!

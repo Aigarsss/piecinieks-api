@@ -7,7 +7,7 @@ require('dotenv').config();
 const gravatar = require('../util/gravatar');
 
 module.exports = {
-    addQuestion: async (parent, { question, answer, acceptedAnswers, airedAt }, { models, user }) => {
+    addQuestion: async (parent, { question, answer, acceptedAnswers, explanation, airedAt }, { models, user }) => {
         if (!user) {
             throw new AuthenticationError('You must be signed in to add questions')
         }
@@ -17,6 +17,7 @@ module.exports = {
                 question: question,
                 answer: answer,
                 acceptedAnswers: acceptedAnswers,
+                explanation: explanation,
                 airedAt: airedAt,
                 author: mongoose.Types.ObjectId(user.id)
             }
@@ -41,7 +42,7 @@ module.exports = {
             return false;
         }
     },
-    updateQuestion: async (parent, { question, answer, acceptedAnswers, airedAt, id }, { models, user }) => {
+    updateQuestion: async (parent, { question, answer, acceptedAnswers, explanation, airedAt, id }, { models, user }) => {
         if (!user) {
             throw new AuthenticationError('You must be signed in to edit a question')
         }
@@ -61,6 +62,7 @@ module.exports = {
                     question,
                     answer,
                     acceptedAnswers,
+                    explanation,
                     airedAt
                 }
             },
