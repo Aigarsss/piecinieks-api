@@ -1,5 +1,5 @@
 module.exports = {
-    questions: async (parent, args, { models }) => models.Question.find(),
+    questions: async (parent, args, { models }) => models.Question.find().sort( { updatedAt: -1 } ),
     question: async (parent, args, { models }) => {
         return models.Question.findById(args.id);
     },
