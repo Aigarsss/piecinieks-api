@@ -13,6 +13,7 @@ module.exports = gql`
         author: User!
         createdAt: DateTime!
         updatedAt: DateTime!
+        isCorrect: Boolean
     }
     
     type User {
@@ -28,6 +29,7 @@ module.exports = gql`
         questions: [Question!]!
         question(id: ID!): Question!
         randomQuestion: [Question!]!
+        checkAnswer(id: ID!, answer: String): Question!
         user(username: String!): User
         users: [User!]!
         me: User!

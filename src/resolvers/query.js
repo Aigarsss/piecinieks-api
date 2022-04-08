@@ -1,3 +1,20 @@
+// Compare words. Word and Wold will match
+// Usage:
+// if (hammingDistance("Word", "wold") <= 1) {
+//     console.log('Match')
+// }
+const hammingDistance = ( str1, str2 ) => {
+    let dist = 0;
+    str1 = str1.toLowerCase();
+    str2 = str2.toLowerCase();
+    for (let i = 0, j = Math.max(str1.length, str2.length); i < j; i++) {
+        if (!str1[i] || !str2[i] || str1[i] !== str2[i]) {
+            dist++;
+        }
+    }
+    return dist;
+}
+
 module.exports = {
     questions: async (parent, args, { models }) => {
         // console.log(models.Question.find().sort({updatedAt: -1}))
@@ -18,6 +35,26 @@ module.exports = {
         result[0].id = result[0]._id;
 
         return result;
+    },
+    checkAnswer: async (parent, args, { models }) => {
+        const question = await models.Question.findById(args.id);
+        question.id = question._id
+        question.isCorrect = false;
+
+        const submittedAnswer = args.answer.trim().toLowerCase();
+        const acceptedAnswers = (question.acceptedAnswers).split(',');
+        const allowedDifferencesInSpelling = 1;
+
+        // Check correct answer
+        acceptedAnswers.forEach(accepted => {
+            accepted = accepted.trim().toLowerCase();
+
+            if (hammingDistance(accepted, submittedAnswer) <= allowedDifferencesInSpelling) {
+                question.isCorrect = true;
+            }
+        })
+
+        return question;
     },
     user: async (parent, { username }, { models }) => {
         return models.User.findOne({ username })
