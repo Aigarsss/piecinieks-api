@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 // Compare words. Word and Wold will match
 // Usage:
 // if (hammingDistance("Word", "wold") <= 1) {
@@ -41,11 +43,14 @@ module.exports = {
         return models.Question.findById(args.id);
     },
     randomQuestion: async (parent, args, { models }) => {
-
-        // Filter out all ids, that have already been shown
-        console.log(args.usedIds)
+        const ObjectId = mongoose.Types.ObjectId;
 
         const result = await models.Question.aggregate([
+            // Filter out all ids, that have already been shown
+            // TODO maybe add error handling, as it will error if no questions left, but should not happen
+            {
+                $match: { _id: { $nin: args.usedIds.map(id => ObjectId(id)) } }
+            },
             {
                 $sample: { size: 1 }
             }
