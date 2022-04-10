@@ -28,7 +28,7 @@ module.exports = gql`
     type Query {
         questions: [Question!]!
         question(id: ID!): Question!
-        randomQuestion: [Question!]!
+        randomQuestion(usedIds: [String]): [Question!]!
         checkAnswer(id: ID!, answer: String): Question!
         user(username: String!): User
         users: [User!]!

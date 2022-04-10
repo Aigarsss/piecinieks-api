@@ -15,6 +15,23 @@ const hammingDistance = ( str1, str2 ) => {
     return dist;
 }
 
+const replaceSpecialCharacters = (string) => {
+    string = string.replace(/ā/g, "a");
+    string = string.replace(/ē/g, "e");
+    string = string.replace(/ī/g, "i");
+    string = string.replace(/ū/g, "u");
+
+    string = string.replace(/č/g, "c");
+    string = string.replace(/ģ/g, "g");
+    string = string.replace(/ķ/g, "k");
+    string = string.replace(/ļ/g, "l");
+    string = string.replace(/ņ/g, "n");
+    string = string.replace(/š/g, "s");
+    string = string.replace(/ž/g, "z");
+
+    return string;
+}
+
 module.exports = {
     questions: async (parent, args, { models }) => {
         // console.log(models.Question.find().sort({updatedAt: -1}))
@@ -24,6 +41,10 @@ module.exports = {
         return models.Question.findById(args.id);
     },
     randomQuestion: async (parent, args, { models }) => {
+
+        // Filter out all ids, that have already been shown
+        console.log(args.usedIds)
+
         const result = await models.Question.aggregate([
             {
                 $sample: { size: 1 }
@@ -41,13 +62,13 @@ module.exports = {
         question.id = question._id
         question.isCorrect = false;
 
-        const submittedAnswer = args.answer.trim().toLowerCase();
+        const submittedAnswer = replaceSpecialCharacters(args.answer.trim().toLowerCase());
         const acceptedAnswers = (question.acceptedAnswers).split(',');
         const allowedDifferencesInSpelling = 1;
 
         // Check correct answer
         acceptedAnswers.forEach(accepted => {
-            accepted = accepted.trim().toLowerCase();
+            accepted = replaceSpecialCharacters(accepted.trim().toLowerCase());
 
             if (hammingDistance(accepted, submittedAnswer) <= allowedDifferencesInSpelling) {
                 question.isCorrect = true;
